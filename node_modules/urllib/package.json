@@ -1,0 +1,121 @@
+{
+  "name": "urllib",
+  "version": "4.9.0",
+  "publishConfig": {
+    "tag": "latest"
+  },
+  "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, timeout and more. Base undici API.",
+  "keywords": [
+    "urllib",
+    "http",
+    "urlopen",
+    "curl",
+    "wget",
+    "request",
+    "https",
+    "undici",
+    "fetch"
+  ],
+  "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
+  "homepage": "https://github.com/node-modules/urllib",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/node-modules/urllib.git"
+  },
+  "scripts": {
+    "lint": "oxlint src test",
+    "fmt": "oxfmt",
+    "typecheck": "tsc --noEmit && tsgo --noEmit",
+    "fmtcheck": "oxfmt --check .",
+    "prebuild": "npm run clean",
+    "build": "tsc --version && tshy && tshy-after && npm run build:version",
+    "postbuild": "rm -rf *.tsbuildinfo",
+    "build:version": "node ./scripts/replace_urllib_version.js",
+    "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
+    "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
+    "build:mts:test": "cd test/mts && rm -rf node_modules && npm link ../.. && tsc",
+    "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run build:mts:test && npm run test-tsc",
+    "test-tsc": "npm run test-tsc:cjs:es2021 && npm run test-tsc:cjs && npm run test-tsc:esm",
+    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && npm run build",
+    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && npm run build",
+    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && npm run build",
+    "test": "npm run lint -- --fix && vitest run",
+    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
+    "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
+    "cov": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --coverage",
+    "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
+    "clean": "rm -rf dist && tsc -b --clean",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "form-data": "^4.0.1",
+    "formstream": "^1.5.1",
+    "mime-types": "^2.1.35",
+    "qs": "^6.12.1",
+    "type-fest": "^4.20.1",
+    "undici": "^7.1.1",
+    "ylru": "^2.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.0",
+    "@eggjs/oxlint-config": "^1.0.0",
+    "@eggjs/tsconfig": "^2.0.0",
+    "@tsconfig/node18": "^18.2.1",
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/busboy": "^1.5.0",
+    "@types/mime-types": "^2.1.1",
+    "@types/node": "^22.0.0",
+    "@types/proxy": "^1.0.4",
+    "@types/qs": "^6.9.7",
+    "@types/selfsigned": "^2.0.1",
+    "@types/tar-stream": "^2.2.2",
+    "@typescript/native-preview": "7.0.0-dev.20251213.1",
+    "@ungap/structured-clone": "^1.2.1",
+    "@vitest/coverage-v8": "^3.0.2",
+    "busboy": "^1.6.0",
+    "cross-env": "^10.0.0",
+    "iconv-lite": "^0.6.3",
+    "oxfmt": "^0.17.0",
+    "oxlint": "^1.11.0",
+    "proxy": "^1.0.2",
+    "selfsigned": "^3.0.0",
+    "string.prototype.towellformed": "^1.0.2",
+    "tar-stream": "^2.2.0",
+    "tshy": "^3.0.0",
+    "tshy-after": "^1.0.0",
+    "typescript": "^5.0.4",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">= 18.19.0"
+  },
+  "license": "MIT",
+  "type": "module",
+  "tshy": {
+    "exports": {
+      ".": "./src/index.ts",
+      "./package.json": "./package.json"
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "packageManager": "pnpm@10.25.0"
+}
